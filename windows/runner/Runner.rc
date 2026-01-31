@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "u3t2_chat_tiempo_real" "\0"
+            VALUE "FileDescription", "chat" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "u3t2_chat_tiempo_real" "\0"
+            VALUE "InternalName", "chat" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "u3t2_chat_tiempo_real.exe" "\0"
-            VALUE "ProductName", "u3t2_chat_tiempo_real" "\0"
+            VALUE "OriginalFilename", "chat.exe" "\0"
+            VALUE "ProductName", "chat" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

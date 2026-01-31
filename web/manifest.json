@@ -1,6 +1,6 @@
 {
-    "name": "u3t2_chat_tiempo_real",
-    "short_name": "u3t2_chat_tiempo_real",
+    "name": "chat",
+    "short_name": "chat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
