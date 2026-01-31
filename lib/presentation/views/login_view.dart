@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
+import '../../data/services/notification_service.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -38,8 +39,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
               onPressed: () async {
                 final name = _controller.text.trim();
                 if (name.isNotEmpty) {
-                  // Registrar en Firebase para que aparezca en la lista
-                  await ref.read(firebaseServiceProvider).registrarUsuario(name);
+                  // Obtener token FCM y registrar usuario
+                  final token = await NotificationService.getDeviceToken();
+                  await ref
+                      .read(firebaseServiceProvider)
+                      .registrarUsuario(name);
+                  if (token != null) {
+                    await ref
+                        .read(firebaseServiceProvider)
+                        .guardarTokenFCM(name, token);
+                  }
                   ref.read(userProvider.notifier).state = name;
                 }
               },

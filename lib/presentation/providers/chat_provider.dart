@@ -1,8 +1,10 @@
 import 'package:riverpod/riverpod.dart';
-import '../../data/data.services/firebase_service.dart';
+import '../../data/services/firebase_service.dart';
 import '../../domain/domain.models/mensaje.dart';
 
-final firebaseServiceProvider = Provider<FirebaseService>((ref) => FirebaseService());
+final firebaseServiceProvider = Provider<FirebaseService>(
+  (ref) => FirebaseService(),
+);
 
 final userProvider = StateProvider<String?>((ref) => null);
 
@@ -13,7 +15,10 @@ final usuariosProvider = StreamProvider<List<String>>((ref) {
 
 // Provider para mensajes de un chat específico
 // Usamos family para pasar el ID del chat
-final chatMensajesProvider = StreamProvider.family<List<Mensaje>, String>((ref, chatPath) {
+final chatMensajesProvider = StreamProvider.family<List<Mensaje>, String>((
+  ref,
+  chatPath,
+) {
   return ref.watch(firebaseServiceProvider).recibirMensajes(chatPath);
 });
 

@@ -5,20 +5,29 @@ import 'firebase_options.dart';
 import 'presentation/views/contacts_view.dart';
 import 'presentation/views/login_view.dart';
 import 'presentation/providers/chat_provider.dart';
+import 'data/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //Incializar Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Inicializar Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    if (!e.toString().contains('duplicate-app')) {
+      rethrow;
+    }
+  }
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  // Inicializar Cloud Messaging
+  await NotificationService.initNotifications();
+  NotificationService.onTokenRefresh((newToken) {
+    print('Token actualizado: $newToken');
+  });
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {

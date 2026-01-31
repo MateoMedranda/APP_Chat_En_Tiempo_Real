@@ -1,31 +1,57 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import '../../domain/mensaje.dart';
+import '../../domain/domain.models/mensaje.dart';
 
 class FirebaseService {
-  final  DatabaseReference _ref= FirebaseDatabase.instance.ref('chat/general');
+  final DatabaseReference _db = FirebaseDatabase.instance.ref();
 
-  Future <void> enviarMensaje(Mensaje mensaje) async{
-    await _ref.push().set(mensaje.toJson());
+  // Guardar usuario para que otros lo vean en la lista de contactos
+  Future<void> registrarUsuario(String nombre) async {
+    await _db.child('usuarios').child(nombre).set({
+      'nombre': nombre,
+      'ultimo_acceso': DateTime.now().millisecondsSinceEpoch,
+    });
   }
 
-  DatabaseReference get mensajeRef => _ref;
+  // Guardar token FCM del usuario
+  Future<void> guardarTokenFCM(String nombreUsuario, String token) async {
+    await _db.child('usuarios').child(nombreUsuario).update({
+      'fcm_token': token,
+      'ultimo_acceso': DateTime.now().millisecondsSinceEpoch,
+    });
+  }
 
-//recibir mensaje
-  Stream<List<Mensaje>> recibirMensajes(){
-    return _ref.onValue.map((event) {
-      //obtener datos
+  // Obtener token FCM de un usuario
+  Future<String?> obtenerTokenFCM(String nombreUsuario) async {
+    final snapshot = await _db.child('usuarios').child(nombreUsuario).get();
+    if (snapshot.exists) {
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      return data['fcm_token'];
+    }
+    return null;
+  }
+
+  // Stream para la lista de usuarios
+  Stream<List<String>> obtenerUsuarios() {
+    return _db.child('usuarios').onValue.map((event) {
       final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      //evitar errores cuando la lista este vacía
-      if(data == null) return [];
-      final mensajes = data.values
-        .map((e) => Mensaje.fromjson(e))
-        .toList();
+      if (data == null) return [];
+      return data.keys.map((e) => e.toString()).toList();
+    });
+  }
 
-      mensajes.sort((a,b) => a.timestamp.compareTo(b.timestamp));
+  // Enviar mensaje a una conversacion específica
+  Future<void> enviarMensaje(String chatPath, Mensaje mensaje) async {
+    await _db.child('chats').child(chatPath).push().set(mensaje.toJson());
+  }
 
+  // Recibir mensajes de una conversacion específica
+  Stream<List<Mensaje>> recibirMensajes(String chatPath) {
+    return _db.child('chats').child(chatPath).onValue.map((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data == null) return [];
+      final mensajes = data.values.map((e) => Mensaje.fromjson(e)).toList();
+      mensajes.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       return mensajes;
     });
-
   }
 }
