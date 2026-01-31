@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:developer' as developer;
 
 class NotificationService {
   static final FirebaseMessaging _firebaseMessaging =
@@ -18,27 +19,24 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('El usuario autorizó las notificaciones');
+      developer.log('El usuario autorizó las notificaciones');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('El usuario concedió permisos provisionales');
+      developer.log('El usuario concedió permisos provisionales');
     } else {
-      print('El usuario rechazó las notificaciones');
+      developer.log('El usuario rechazó las notificaciones');
     }
 
     // Escuchar mensajes en primer plano
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Notificación en primer plano:');
-      print('Título: ${message.notification?.title}');
-      print('Cuerpo: ${message.notification?.body}');
-      print('Datos: ${message.data}');
+      developer.log(
+        'Notificación en primer plano: ${message.notification?.title}',
+      );
     });
 
     // Escuchar cuando la app se abre desde notificación
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Notificación abierta:');
-      print('Título: ${message.notification?.title}');
-      print('Cuerpo: ${message.notification?.body}');
+      developer.log('Notificación abierta: ${message.notification?.title}');
     });
   }
 
@@ -46,10 +44,10 @@ class NotificationService {
   static Future<String?> getDeviceToken() async {
     try {
       final token = await _firebaseMessaging.getToken();
-      print('Token del dispositivo: $token');
+      developer.log('Token del dispositivo obtenido');
       return token;
     } catch (e) {
-      print('Error al obtener token: $e');
+      developer.log('Error al obtener token: $e');
       return null;
     }
   }
@@ -57,7 +55,7 @@ class NotificationService {
   // Guardar el token en Firebase cuando se regenera
   static void onTokenRefresh(Function(String) onTokenUpdated) {
     _firebaseMessaging.onTokenRefresh.listen((newToken) {
-      print('Nuevo token: $newToken');
+      developer.log('Token actualizado');
       onTokenUpdated(newToken);
     });
   }

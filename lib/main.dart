@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:developer' as developer;
 import 'firebase_options.dart';
 import 'presentation/views/contacts_view.dart';
 import 'presentation/views/login_view.dart';
 import 'presentation/providers/chat_provider.dart';
+import 'presentation/theme/theme.dart';
 import 'data/services/notification_service.dart';
 
 void main() async {
@@ -24,7 +26,7 @@ void main() async {
   // Inicializar Cloud Messaging
   await NotificationService.initNotifications();
   NotificationService.onTokenRefresh((newToken) {
-    print('Token actualizado: $newToken');
+    developer.log('Token actualizado');
   });
 
   runApp(const ProviderScope(child: MyApp()));
@@ -39,7 +41,8 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // Si el usuario está logueado, lo llevamos a la lista de contactos
+      title: 'Chat Online',
+      theme: AppTheme.lightTheme(),
       home: user == null ? const LoginView() : const ContactsView(),
     );
   }
