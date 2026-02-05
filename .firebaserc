@@ -1,5 +1,1 @@
-{
-  "projects": {
-    "default": "online-chat-a45f4"
-  }
-}
+{"flutter":{"platforms":{"android":{"default":{"projectId":"medrandachattiemporeal","appId":"1:243886791249:android:0ad93d31dd8df02a9ff670","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"medrandachattiemporeal","configurations":{"android":"1:243886791249:android:0ad93d31dd8df02a9ff670","ios":"1:243886791249:ios:cdea988813576d009ff670","macos":"1:243886791249:ios:cdea988813576d009ff670","web":"1:243886791249:web:6c1fb298c5921d139ff670","windows":"1:243886791249:web:ab2ec6ad2becd8a89ff670"}}}}}}
